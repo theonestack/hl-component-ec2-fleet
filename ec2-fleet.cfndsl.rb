@@ -95,7 +95,7 @@ CloudFormation do
     OnDemandOptions({ AllocationStrategy: 'lowest-price' }) #lowest-price | prioritized
     ReplaceUnhealthyInstances false
     SpotOptions({
-      AllocationStrategy: 'lowest-price', #diversified | lowest-price
+      AllocationStrategy: 'lowestPrice', #diversified | lowestPrice
       InstanceInterruptionBehavior: 'terminate'
     })
     TagSpecifications{[
