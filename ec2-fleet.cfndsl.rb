@@ -37,9 +37,8 @@ CloudFormation do
     Roles [Ref('Role')]
   end
 
-  fleet_tags = []
   fleet_tags.push({ Key: 'Name', Value: FnSub("${EnvironmentName}-fleet-xx") })
-  fleet_tags.push(*instance_tags.map {|k,v| {Key: k, Value: FnSub(v)}}).uniq { |h| h[:Key] } if defined? instance_tags
+  fleet_tags.push(*instance_tags.map {|k,v| {Key: k, Value: FnSub(v)}}) if defined? instance_tags
 
   # Setup userdata string
   instance_userdata = "#!/bin/bash\nset -o xtrace\n"
@@ -98,12 +97,12 @@ CloudFormation do
       AllocationStrategy: 'lowestPrice', #diversified | lowestPrice
       InstanceInterruptionBehavior: 'terminate'
     })
-    TagSpecifications{[
+    TagSpecifications([
       {
         ResourceType: 'fleet',
-        Tags: fleet_tags
+        Tags: fleet_tags.reverse.uniq { |h| h[:Key] }
       }
-    ]}
+    ])
     TargetCapacitySpecification({
       DefaultTargetCapacityType: Ref(:DefaultTargetCapacityType),
       OnDemandTargetCapacity: Ref(:OnDemandTargetCapacity),
