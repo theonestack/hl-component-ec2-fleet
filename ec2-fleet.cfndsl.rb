@@ -91,7 +91,7 @@ CloudFormation do
         Overrides: fleet_overrides
       }
     ])
-    OnDemandOptions({ AllocationStrategy: 'lowest-price' }) #lowest-price | prioritized
+    OnDemandOptions({ AllocationStrategy: 'lowestPrice' }) #lowest-price | prioritized
     ReplaceUnhealthyInstances false
     SpotOptions({
       AllocationStrategy: 'lowestPrice', #diversified | lowestPrice
