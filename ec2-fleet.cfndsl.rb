@@ -20,6 +20,19 @@ CloudFormation do
     ])
     Tags fleet_tags
   end
+  
+  security_groups.each do |sg|
+    EC2_SecurityGroupIngress("SecurityGroupRule#{sg['name']}") do
+      Description FnSub(sg['desc']) if sg.has_key? 'desc'
+      IpProtocol (sg.has_key?('protocol') ? sg['protocol'] : 'tcp')
+      FromPort sg['from']
+      ToPort (sg.key?('to') ? sg['to'] : sg['from'])
+      GroupId FnGetAtt("SecurityGroupFleet",'GroupId')
+      SourceSecurityGroupId sg.key?('securty_group') ? FnSub(sg['source_securty_group_ip']) : FnGetAtt("SecurityGroupFleet",'GroupId') unless sg.has_key?('cidrip')
+      CidrIp sg['cidrip'] if sg.has_key?('cidrip')
+    end
+  end if defined? security_groups
+
 
   policies = []
   iam_policies.each do |name,policy|
@@ -110,6 +123,10 @@ CloudFormation do
       TotalTargetCapacity: Ref(:TotalTargetCapacity)
     })
     Type 'maintain'
+  }
+  
+  Output(:SecurityGroupId) {
+    Value FnGetAtt(:SecurityGroupFleet,:GroupId)
   }
 
 end
