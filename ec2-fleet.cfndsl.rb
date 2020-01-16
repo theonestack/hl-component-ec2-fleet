@@ -4,7 +4,7 @@ CloudFormation do
 
   fleet_tags = []
   fleet_tags.push({ Key: 'Name', Value: FnSub("${EnvironmentName}-#{component_name}") })
-  fleet_tags.push({ Key: 'EnvironmentName', Value: Ref(:EnvironmentName) })
+  fleet_tags.push({ Key: 'Environment', Value: Ref(:EnvironmentName) })
   fleet_tags.push({ Key: 'EnvironmentType', Value: Ref(:EnvironmentType) })
   fleet_tags.push(*tags.map {|k,v| {Key: k, Value: FnSub(v)}}).uniq { |h| h[:Key] } if defined? tags
 
